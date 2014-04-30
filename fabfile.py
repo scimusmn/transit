@@ -2,9 +2,8 @@
 Recipes for GDAL Geo Tiff conversion
 """
 from fabric.api import local, prompt, task
-#from fabric.contrib.files import (exists)
-from helper import header
-#from helper import header, mute
+from fabric.utils import abort
+from helper import header, check_true
 import glob
 import os
 
@@ -38,7 +37,9 @@ I plan on deleting all of these files in this dir:
 
 Proceed?
 """
-    prompt(delete_prompt)
+    answer = prompt(delete_prompt)
+    if check_true(answer) is not True:
+        abort()
 
     # Reset the directory
     local('rm -rf %s' % os.path.join(dir_esc, '*-no_edges.tif'))

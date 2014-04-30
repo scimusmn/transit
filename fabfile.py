@@ -28,8 +28,6 @@ def dem_dir(dir, ramp_color='ramp_color.txt', slope_ramp='slope_ramp.txt'):
         ramp_color: Path to a text file of the ramp for topo coloring
         slope_ramp: Path to a text file of the ramp for slope shading
     """
-    print ramp_color
-    print slope_ramp
 
     dir_esc = shellescapespace(dir)
 

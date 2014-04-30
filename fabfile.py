@@ -1,9 +1,11 @@
 """
 Recipes for GDAL Geo Tiff conversion
+
 """
 
 from fabric.api import local, task
 import glob
+import os
 
 
 @task
@@ -15,12 +17,13 @@ def dem_dir(dir):
 
     """
 
-    local('rm -rf *-no_edges.tif')
-    local('rm -rf *bak.tif')
-    local('rm -rf *-3785.tif')
-    local('rm -rf *-hillshade.tif')
-    local('rm -rf *-slope.tif')
-    filepath = dir + '*.tif'
+    # Reset the directory
+    local(os.path.join('rm -rf %s' % dir, '*-no_edges.tif'))
+    local(os.path.join('rm -rf %s' % dir, '*bak.tif'))
+    local(os.path.join('rm -rf %s' % dir, '*-3785.tif'))
+    local(os.path.join('rm -rf %s' % dir, '*-hillshade.tif'))
+    local(os.path.join('rm -rf %s' % dir, '*-slope.tif'))
+    filepath = os.path.join(dir, '*.tif')
     files = glob.glob(filepath)
     hillshade_files = []
     slope_files = []

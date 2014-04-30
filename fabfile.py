@@ -3,7 +3,7 @@ Recipes for GDAL Geo Tiff conversion
 """
 from fabric.api import local, prompt, task
 from fabric.utils import abort
-from helper import header, check_true
+from helper import check_true, header
 import glob
 import os
 
@@ -58,13 +58,22 @@ Proceed?
         print
         print header("Converting %s" % file)
 
+
+        print "Converting DEM to Google Mercator"
+        print
         srs_3785_file = srs_wgs84_to_google(shellquote(file))
         print "SRS 3785 file created %s" % srs_3785_file
 
+        print
+        print "Creating Hillshade GeoTIFF"
+        print
         hillshade_file = hillshade(srs_3785_file)
         hillshade_files.append(hillshade_file)
         print "Hillshade file created %s" % hillshade_file
 
+        print
+        print "Creating Slope GeoTiff"
+        print
         slope_file = slope(srs_3785_file)
         slope_files.append(slope_file)
         print "Slope file created %s" % slope_file

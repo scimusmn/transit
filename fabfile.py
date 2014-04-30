@@ -33,9 +33,9 @@ I plan on deleting all of these files in this dir:
 
 Proceed?
 """
-    answer = prompt(delete_prompt)
-    if check_true(answer) is not True:
-        abort()
+    answer = check_true(prompt(delete_prompt))
+    if answer is not True:
+        abort('Taking that as a no. No files affected.')
 
     # Reset the directory
     local('rm -rf %s' % os.path.join(dir_esc, '*-no_edges.tif'))

@@ -17,8 +17,14 @@ def shellescapespace(s):
 
 
 @task
-def dem_dir(dir):
-    """Generate hillshaded DEMs for an entire directory """
+def dem_dir(dir, color_ramp, slope_ramp):
+    """Generate hillshaded DEMs for an entire directory
+
+    Arguments:
+        dir: Path to the directory to be processed.
+        color_ramp: Path to a text file of the ramp for topo coloring
+        slope_ramp: Path to a text file of the ramp for slope shading
+    """
 
     dir_esc = shellescapespace(dir)
 

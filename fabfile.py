@@ -20,13 +20,13 @@ def shellescapespace(s):
 
 @task
 #def dem_dir(dir):
-def dem_dir(dir, ramp_color='ramp_color.txt', slope_ramp='slope_ramp.txt'):
+def dem_dir(dir, ramp_color='ramp_color.txt', ramp_slope='ramp_slope.txt'):
     """Generate hillshaded DEMs for an entire directory
 
     Arguments:
         dir: Path to the directory to be processed.
         ramp_color: Path to a text file of the ramp for topo coloring
-        slope_ramp: Path to a text file of the ramp for slope shading
+        ramp_slope: Path to a text file of the ramp for slope shading
     """
 
     dir_esc = shellescapespace(dir)
@@ -93,7 +93,7 @@ Proceed?
         print
         print "Creating Slope GeoTIFF"
         print
-        slope_file = slope(srs_3785_file)
+        slope_file = slope(srs_3785_file, dir_esc + os.sep + ramp_slope)
         slope_files.append(slope_file)
         print "Slope file created %s" % slope_file
 

@@ -1,6 +1,6 @@
 # Transit
 
-Python helped scripts for dealing with maps, specifically GeoTIFFs
+Python helper scripts for dealing with maps, specifically GeoTIFFs
 
 ## Usage
 See what it can do with:

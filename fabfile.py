@@ -5,6 +5,19 @@ Recipes for GDAL Geo Tif conversion
 from fabric.api import local
 import glob
 
+def hillshade(source):
+    """Convert a GeoTif to a hillshade GeoTif"""
+
+    # Append an identifier to the filename
+    target = filename_flag(source, 'hillshade')
+
+    # Use gdal to convert the file
+    cmd = 'gdaldem hillshade -compute_edges -co compress=lzw %s %s' % (
+        source, target)
+    local(cmd)
+    return target
+
+
 def filename_flag(filename, flag):
     filename_parts = filename.split('.')
     output = ''

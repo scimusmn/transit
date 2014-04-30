@@ -4,8 +4,10 @@ Recipes for GDAL Geo Tiff conversion
 from fabric.api import local, prompt, task
 from fabric.utils import abort
 from helper import check_true, header
+
 import glob
 import os
+
 
 def shellquote(s):
     return '"' + s.replace("'", "'\\''") + '"'

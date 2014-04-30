@@ -1,5 +1,5 @@
 """
-Recipes for GDAL Geo Tiff conversion
+Recipes for GDAL GeoTIFF conversion
 """
 from fabric.api import local, prompt, task
 from fabric.utils import abort
@@ -77,7 +77,7 @@ Proceed?
         print "SRS 3785 file created %s" % srs_3785_file
 
         print
-        print "Creating color relief GeoTiff"
+        print "Creating color relief GeoTIFF"
         print
         color_file = color(srs_3785_file, dir_esc + os.sep + ramp_color)
         color_files.append(color_file)
@@ -93,7 +93,7 @@ Proceed?
         print "Hillshade file created %s" % hillshade_file
 
         print
-        print "Creating Slope GeoTiff"
+        print "Creating Slope GeoTIFF"
         print
         slope_file = slope(srs_3785_file)
         slope_files.append(slope_file)
@@ -110,7 +110,7 @@ Proceed?
 
 @task
 def remove_border(source):
-    """Remove single pixel border form the GeoTifs
+    """Remove single pixel border form the GeoTIFFs
 
     These borders cause problems in transparency
     """
@@ -125,7 +125,7 @@ def remove_border(source):
 
 @task
 def srs_wgs84_to_google(source):
-    """Convert a WGS84 GeoTif file to a Google Mercator GeoTif """
+    """Convert a WGS84 GeoTIFF file to a Google Mercator GeoTIFF """
 
     # Add the google mercator EPSG number to the filename
     target = filename_flag(source, '3785')
@@ -138,18 +138,22 @@ def srs_wgs84_to_google(source):
 
 
 @task
-def slope(source):
-    """Convert a GeoTif to a slope GeoTif"""
+def slope(source, ramp_slope):
+    """Convert a GeoTIFF to a slope GeoTIFF"""
 
-    target = filename_flag(source, 'slope')
-    cmd = 'gdaldem slope %s %s' % (source, target)
+    slope_file = filename_flag(source, 'slope')
+    cmd = 'gdaldem slope %s %s' % (source, slope_file)
+    local(cmd)
+    target = filename_flag(source, 'slopeshade')
+    cmd = 'gdaldem color-relief -co compress=lzw %s %s %s' % (
+        slope_file, ramp_slope, target)
     local(cmd)
     return target
 
 
 @task
 def hillshade(source):
-    """Convert a GeoTif to a hillshade GeoTif"""
+    """Convert a GeoTIFF to a hillshade GeoTIFF"""
 
     target = filename_flag(source, 'hillshade')
     cmd = 'gdaldem hillshade -compute_edges -co compress=lzw %s %s' % (

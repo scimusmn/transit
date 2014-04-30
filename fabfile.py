@@ -56,10 +56,7 @@ Proceed?
     slope_files = []
     for file in files:
         print
-        print """
-===============================================================================
-"""
-        print "Converting %s" % file
+        print header("Converting %s" % file)
 
         srs_3785_file = srs_wgs84_to_google(shellquote(file))
         print "SRS 3785 file created %s" % srs_3785_file

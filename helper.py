@@ -5,8 +5,8 @@ from contextlib import contextmanager
 
 def header(txt):
     """Decorate a string to make it stand out as a header. """
-    wrapper = "------------------------------------------------------"
-    return blue(wrapper + "\n" + txt + "\n" + wrapper, bold=True)
+    wrapper = "-" * len(txt)
+    return blue("\n" + txt + "\n" + wrapper + "\n", bold=True)
 
 
 @contextmanager

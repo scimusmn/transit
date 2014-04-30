@@ -18,12 +18,8 @@ def shellescapespace(s):
 
 @task
 def dem_dir(dir):
-    """Generate hillshaded DEMs for an entire directory
+    """Generate hillshaded DEMs for an entire directory """
 
-    THIS IS A HACK
-    really only works with fab dem_dir:''
-
-    """
     dir_esc = shellescapespace(dir)
 
     header('Cleaning up')

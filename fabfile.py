@@ -1,11 +1,12 @@
 """
-Recipes for GDAL Geo Tif conversion
+Recipes for GDAL Geo Tiff conversion
 """
 
-from fabric.api import local
+from fabric.api import local, task
 import glob
 
 
+@task
 def dem_dir(dir):
     """Generate hillshaded DEMs for an entire directory
 
@@ -49,6 +50,7 @@ def dem_dir(dir):
     local('gdal_merge.py -o slopes.tif ' + ' '.join(slope_files))
 
 
+@task
 def remove_border(source):
     """Remove single pixel border form the GeoTifs
 
@@ -63,6 +65,7 @@ def remove_border(source):
     return target
 
 
+@task
 def srs_wgs84_to_google(source):
     """Convert a WGS84 GeoTif file to a Google Mercator GeoTif """
 
@@ -76,6 +79,7 @@ def srs_wgs84_to_google(source):
     return target
 
 
+@task
 def slope(source):
     """Convert a GeoTif to a slope GeoTif"""
 
@@ -85,6 +89,7 @@ def slope(source):
     return target
 
 
+@task
 def hillshade(source):
     """Convert a GeoTif to a hillshade GeoTif"""
 

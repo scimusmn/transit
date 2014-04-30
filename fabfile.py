@@ -39,6 +39,7 @@ I plan on deleting all of these files in this dir:
     *-3785.tif
     *-hillshade.tif
     *-slope.tif
+    *-slopeshade.tif
     color.tif
     hillshades.tif
     slopes.tif
@@ -55,6 +56,7 @@ Proceed?
     local('rm -rf %s' % os.path.join(dir_esc, '*-3785.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-hillshade.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-slope.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*-slopeshade.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-color.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, 'color.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, 'hillshades.tif'))

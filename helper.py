@@ -25,7 +25,7 @@ def check_true(string):
     Default to returning a False value unless truth is found.
     """
     string = string.lower()
-    if string in ['true', 'yes', '1', 'yep', 'yeah']:
+    if string in ['true', 'yes', 'y', '1', 'yep', 'yeah']:
         return True
     else:
         return False

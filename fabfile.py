@@ -19,25 +19,31 @@ def shellescapespace(s):
 
 
 @task
-def dem_dir(dir, color_ramp, slope_ramp):
+#def dem_dir(dir):
+def dem_dir(dir, ramp_color='ramp_color.txt', slope_ramp='slope_ramp.txt'):
     """Generate hillshaded DEMs for an entire directory
 
     Arguments:
         dir: Path to the directory to be processed.
-        color_ramp: Path to a text file of the ramp for topo coloring
+        ramp_color: Path to a text file of the ramp for topo coloring
         slope_ramp: Path to a text file of the ramp for slope shading
     """
+    print ramp_color
+    print slope_ramp
 
     dir_esc = shellescapespace(dir)
 
     header('Cleaning up')
     delete_prompt = """
 I plan on deleting all of these files in this dir:
-    *-no_edges.tif'
-    *bak.tif'
-    *-3785.tif'
-    *-hillshade.tif'
-    *-slope.tif'
+    *-no_edges.tif
+    *bak.tif
+    *-3785.tif
+    *-hillshade.tif
+    *-slope.tif
+    color.tif
+    hillshades.tif
+    slopes.tif
 
 Proceed?
 """
@@ -51,20 +57,33 @@ Proceed?
     local('rm -rf %s' % os.path.join(dir_esc, '*-3785.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-hillshade.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-slope.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*-color.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, 'color.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, 'hillshades.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, 'slopes.tif'))
 
     filepath = os.path.join(dir, '*.tif')
     files = glob.glob(filepath)
     hillshade_files = []
     slope_files = []
+    color_files = []
     for file in files:
         print
         print header("Converting %s" % file)
-
 
         print "Converting DEM to Google Mercator"
         print
         srs_3785_file = srs_wgs84_to_google(shellquote(file))
         print "SRS 3785 file created %s" % srs_3785_file
+
+        print
+        print "Creating color relief GeoTiff"
+        print
+        color_file = color(srs_3785_file, dir_esc + os.sep + ramp_color)
+        color_files.append(color_file)
+        print "*" * 50
+        print "Color file created %s" % color_file
+        print "*" * 50
 
         print
         print "Creating Hillshade GeoTIFF"
@@ -80,12 +99,13 @@ Proceed?
         slope_files.append(slope_file)
         print "Slope file created %s" % slope_file
 
-        print """
-===============================================================================
-"""
-    print "Merging files"
-    local('gdal_merge.py -o hillshades.tif ' + ' '.join(hillshade_files))
-    local('gdal_merge.py -o slopes.tif ' + ' '.join(slope_files))
+    print header("Merging files")
+    local('gdal_merge.py -o ' + dir_esc + os.sep + 'hillshades.tif ' +
+          ' '.join(hillshade_files))
+    local('gdal_merge.py -o ' + dir_esc + os.sep + 'slopes.tif ' +
+          ' '.join(slope_files))
+    local('gdal_merge.py -o ' + dir_esc + os.sep + 'color.tif ' +
+          ' '.join(color_files))
 
 
 @task
@@ -134,6 +154,15 @@ def hillshade(source):
     target = filename_flag(source, 'hillshade')
     cmd = 'gdaldem hillshade -compute_edges -co compress=lzw %s %s' % (
         source, target)
+    local(cmd)
+    return target
+
+
+@task
+def color(source, ramp_color):
+    """Generate a color-relief GeoTIFF """
+    target = filename_flag(source, 'color')
+    cmd = 'gdaldem color-relief %s %s %s' % (source, ramp_color, target)
     local(cmd)
     return target
 

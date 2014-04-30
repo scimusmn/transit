@@ -6,6 +6,20 @@ from fabric.api import local
 import glob
 
 
+def remove_border(source):
+    """Remove single pixel border form the GeoTifs
+
+    These borders cause problems in transparency
+    """
+    target = filename_flag(source, 'no_edges')
+    cmd = 'gdal_translate %s -co tfw=yes temporary.tif' % (source)
+    local(cmd)
+    cmd = 'gdal_translate temporary.tif %s' % (target)
+    local(cmd)
+
+    return target
+
+
 def srs_wgs84_to_google(source):
     """Convert a WGS84 GeoTif file to a Google Mercator GeoTif """
 

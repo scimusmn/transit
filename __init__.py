@@ -1,11 +1,20 @@
 """
 Recipes for GDAL Geo Tiff conversion
-
 """
-
-from fabric.api import local, task
+from fabric.api import local, prompt, task
+#from fabric.contrib.files import (exists)
+from helper import header
+#from helper import header, mute
 import glob
 import os
+
+def shellquote(s):
+    return '"' + s.replace("'", "'\\''") + '"'
+
+
+def shellescapespace(s):
+    """Sometimes we need spaces escaped for shell """
+    return s.replace(" ", "\\ ")
 
 
 @task
@@ -16,13 +25,28 @@ def dem_dir(dir):
     really only works with fab dem_dir:''
 
     """
+    dir_esc = shellescapespace(dir)
+
+    header('Cleaning up')
+    delete_prompt = """
+I plan on deleting all of these files in this dir:
+    *-no_edges.tif'
+    *bak.tif'
+    *-3785.tif'
+    *-hillshade.tif'
+    *-slope.tif'
+
+Proceed?
+"""
+    prompt(delete_prompt)
 
     # Reset the directory
-    local(os.path.join('rm -rf %s' % dir, '*-no_edges.tif'))
-    local(os.path.join('rm -rf %s' % dir, '*bak.tif'))
-    local(os.path.join('rm -rf %s' % dir, '*-3785.tif'))
-    local(os.path.join('rm -rf %s' % dir, '*-hillshade.tif'))
-    local(os.path.join('rm -rf %s' % dir, '*-slope.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*-no_edges.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*bak.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*-3785.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*-hillshade.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*-slope.tif'))
+
     filepath = os.path.join(dir, '*.tif')
     files = glob.glob(filepath)
     hillshade_files = []
@@ -34,7 +58,7 @@ def dem_dir(dir):
 """
         print "Converting %s" % file
 
-        srs_3785_file = srs_wgs84_to_google(file)
+        srs_3785_file = srs_wgs84_to_google(shellquote(file))
         print "SRS 3785 file created %s" % srs_3785_file
 
         hillshade_file = hillshade(srs_3785_file)

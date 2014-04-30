@@ -6,6 +6,49 @@ from fabric.api import local
 import glob
 
 
+def dem_dir(dir):
+    """Generate hillshaded DEMs for an entire directory
+
+    THIS IS A HACK
+    really only works with fab dem_dir:''
+
+    """
+
+    local('rm -rf *-no_edges.tif')
+    local('rm -rf *bak.tif')
+    local('rm -rf *-3785.tif')
+    local('rm -rf *-hillshade.tif')
+    local('rm -rf *-slope.tif')
+    filepath = dir + '*.tif'
+    files = glob.glob(filepath)
+    hillshade_files = []
+    slope_files = []
+    for file in files:
+        print
+        print """
+===============================================================================
+"""
+        print "Converting %s" % file
+
+        srs_3785_file = srs_wgs84_to_google(file)
+        print "SRS 3785 file created %s" % srs_3785_file
+
+        hillshade_file = hillshade(srs_3785_file)
+        hillshade_files.append(hillshade_file)
+        print "Hillshade file created %s" % hillshade_file
+
+        slope_file = slope(srs_3785_file)
+        slope_files.append(slope_file)
+        print "Slope file created %s" % slope_file
+
+        print """
+===============================================================================
+"""
+    print "Merging files"
+    local('gdal_merge.py -o hillshades.tif ' + ' '.join(hillshade_files))
+    local('gdal_merge.py -o slopes.tif ' + ' '.join(slope_files))
+
+
 def remove_border(source):
     """Remove single pixel border form the GeoTifs
 

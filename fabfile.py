@@ -64,6 +64,7 @@ Proceed?
 
     filepath = os.path.join(dir, '*.tif')
     files = glob.glob(filepath)
+    srs_3785_files = []
     hillshade_files = []
     slope_files = []
     color_files = []
@@ -74,6 +75,7 @@ Proceed?
         print "Converting DEM to Google Mercator"
         print
         srs_3785_file = srs_wgs84_to_google(shellquote(file))
+        srs_3785_files.append(srs_3785_file)
         print "SRS 3785 file created %s" % srs_3785_file
 
         print
@@ -100,6 +102,8 @@ Proceed?
         print "Slope file created %s" % slope_file
 
     print header("Merging files")
+    local('gdal_merge.py -o ' + dir_esc + os.sep + 'srs_3785.tif ' +
+          ' '.join(srs_3785_files))
     local('gdal_merge.py -o ' + dir_esc + os.sep + 'hillshades.tif ' +
           ' '.join(hillshade_files))
     local('gdal_merge.py -o ' + dir_esc + os.sep + 'slopes.tif ' +

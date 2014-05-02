@@ -53,7 +53,7 @@ Proceed?
     # Reset the directory
     local('rm -rf %s' % os.path.join(dir_esc, '*-no_edges.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*bak.tif'))
-    local('rm -rf %s' % os.path.join(dir_esc, '*-3785.tif'))
+    local('rm -rf %s' % os.path.join(dir_esc, '*3785.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-hillshade.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-slope.tif'))
     local('rm -rf %s' % os.path.join(dir_esc, '*-slopeshade.tif'))

@@ -1,6 +1,4 @@
-"""
-Recipes for GDAL GeoTIFF conversion
-"""
+"""Recipes for GDAL GeoTIFF conversion."""
 from fabric.api import local, prompt, task
 from fabric.utils import abort
 from helper import check_true, header
@@ -10,25 +8,24 @@ import os
 
 
 def shellquote(s):
+    """Fix quote escaping for some wrapped commands."""
     return '"' + s.replace("'", "'\\''") + '"'
 
 
 def shellescapespace(s):
-    """Sometimes we need spaces escaped for shell """
+    """Escape spaces for shell."""
     return s.replace(" ", "\\ ")
 
 
 @task
-#def dem_dir(dir):
 def dem_dir(dir, ramp_color='ramp_color.txt', ramp_slope='ramp_slope.txt'):
-    """Generate hillshaded DEMs for an entire directory
+    """Generate hillshaded DEMs for an entire directory.
 
     Arguments:
         dir: Path to the directory to be processed.
         ramp_color: Path to a text file of the ramp for topo coloring
         ramp_slope: Path to a text file of the ramp for slope shading
     """
-
     dir_esc = shellescapespace(dir)
 
     header('Cleaning up')
@@ -114,7 +111,7 @@ Proceed?
 
 @task
 def remove_border(source):
-    """Remove single pixel border form the GeoTIFFs
+    """Remove single pixel border form the GeoTIFFs.
 
     These borders cause problems in transparency
     """
@@ -129,8 +126,7 @@ def remove_border(source):
 
 @task
 def srs_wgs84_to_google(source):
-    """Convert a WGS84 GeoTIFF file to a Google Mercator GeoTIFF """
-
+    """Convert a WGS84 GeoTIFF file to a Google Mercator GeoTIFF."""
     # Add the google mercator EPSG number to the filename
     target = filename_flag(source, '3785')
 
@@ -143,8 +139,7 @@ def srs_wgs84_to_google(source):
 
 @task
 def slope(source, ramp_slope):
-    """Convert a GeoTIFF to a slope GeoTIFF"""
-
+    """Convert a GeoTIFF to a slope GeoTIFF."""
     slope_file = filename_flag(source, 'slope')
     cmd = 'gdaldem slope %s %s' % (source, slope_file)
     local(cmd)
@@ -157,8 +152,7 @@ def slope(source, ramp_slope):
 
 @task
 def hillshade(source):
-    """Convert a GeoTIFF to a hillshade GeoTIFF"""
-
+    """Convert a GeoTIFF to a hillshade GeoTIFF."""
     target = filename_flag(source, 'hillshade')
     cmd = 'gdaldem hillshade -compute_edges -co compress=lzw %s %s' % (
         source, target)
@@ -168,7 +162,7 @@ def hillshade(source):
 
 @task
 def color(source, ramp_color):
-    """Generate a color-relief GeoTIFF """
+    """Generate a color-relief GeoTIFF."""
     target = filename_flag(source, 'color')
     cmd = 'gdaldem color-relief %s %s %s' % (source, ramp_color, target)
     local(cmd)
@@ -176,6 +170,7 @@ def color(source, ramp_color):
 
 
 def filename_flag(filename, flag):
+    """Add a string to filenames to indicate how they've been processed."""
     filename_parts = filename.split('.')
     output = ''
     count = len(filename_parts)
